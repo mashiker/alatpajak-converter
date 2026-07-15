@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Converter | E-Faktur Automation</title>
+    
+    <!-- Geist Font (Vercel) -->
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Jspreadsheet CE CSS -->
+    <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v4/jexcel.css" type="text/css" />
+    <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
+    
+    <!-- Custom CSS (Vercel-style) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="heading">CSV Converter E-Faktur</h1>
+            <p class="subtext">Paste data Excel ke tabel. Validasi otomatis Nomor Faktur Pajak (17 digit) & Bulan Faktur Pajak (ejaan lengkap). Download CSV siap upload.</p>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button id="btn-clear" class="btn btn-ghost">Bersihkan Tabel</button>
+            <button id="btn-export" class="btn btn-primary">⬇️ Download CSV</button>
+        </div>
+
+        <!-- Validation Alert -->
+        <div id="validation-alert" class="alert hidden" role="alert"></div>
+
+        <!-- Spreadsheet Card -->
+        <section class="card">
+            <div id="spreadsheet-container">
+                <div id="spreadsheet"></div>
+            </div>
+            <p class="hint">💡 Copy dari Excel → Paste di sini (Ctrl+V). Baris error akan berwarna merah muda.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Dibuat untuk <a href="https://alatpajak.id" target="_blank" rel="noopener">AlatPajak.id</a> · E-Faktur Automation</p>
+        </footer>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
+    <script src="https://jsuites.net/v4/jsuites.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
