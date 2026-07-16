@@ -5,11 +5,49 @@ document.addEventListener('DOMContentLoaded', function() {
         { type: 'text', title: 'Bulan Faktur Pajak', width: 220 }
     ];
 
+    const DEFAULT_ROWS = 500;
+
+    // ===== Helper modal native (tanpa CDN tambahan) =====
+    function showModal(title, html, options) {
+        options = options || {};
+        var existing = document.getElementById('app-modal-overlay');
+        if (existing) existing.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'app-modal-overlay';
+        overlay.className = 'app-modal-overlay';
+        overlay.innerHTML = `
+            <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
+                <button type="button" class="app-modal-close" aria-label="Tutup">×</button>
+                <h2 id="app-modal-title">${title}</h2>
+                <div class="app-modal-content">${html}</div>
+                <div class="app-modal-actions">
+                    <button type="button" class="btn btn-primary app-modal-ok">${options.confirmText || 'OK'}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        function closeModal() {
+            overlay.remove();
+        }
+
+        overlay.querySelector('.app-modal-close').addEventListener('click', closeModal);
+        overlay.querySelector('.app-modal-ok').addEventListener('click', closeModal);
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) closeModal();
+        });
+    }
+
+    function showNotice(title, message) {
+        showModal(title, '<p>' + message + '</p>', { confirmText: 'OK' });
+    }
+
     // ===== Inisialisasi Jspreadsheet (500 baris) =====
     const table = jspreadsheet(document.getElementById('spreadsheet'), {
-        data: [['', '']], 
+        data: [['', '']],
         columns: columns,
-        minDimensions: [2, 500], // diubah menjadi 500 baris sesuai permintaan Jevi
+        minDimensions: [2, DEFAULT_ROWS],
         allowInsertRow: true,
         allowManualInsertRow: true,
         allowInsertColumn: false,
@@ -17,99 +55,79 @@ document.addEventListener('DOMContentLoaded', function() {
         wordWrap: true,
     });
 
+    // Paksa pastikan 500 baris walaupun library/CDN behave beda
+    function ensureMinimumRows(minRows) {
+        var currentRows = table.getData().length;
+        var missingRows = minRows - currentRows;
+        if (missingRows > 0) {
+            addRows(missingRows, false);
+        }
+    }
+
+    function addRows(count, showFeedback) {
+        count = parseInt(count, 10) || DEFAULT_ROWS;
+        if (count <= 0 || count > 10000) {
+            showNotice('Jumlah tidak valid', 'Harap masukkan jumlah baris antara 1 sampai 10.000.');
+            return false;
+        }
+
+        // Jspreadsheet v4 CE lebih aman ditambah satu-satu agar tidak beda interpretasi API insertRow(count).
+        for (var i = 0; i < count; i++) {
+            table.insertRow();
+        }
+
+        if (showFeedback) {
+            showNotice('Berhasil', count + ' baris baru sudah ditambahkan ke tabel.');
+        }
+        return true;
+    }
+
+    ensureMinimumRows(DEFAULT_ROWS);
+
     // ===== Tombol Bersihkan =====
     document.getElementById('btn-clear').addEventListener('click', function() {
         if (confirm('Bersihkan semua data?')) {
             table.setData([['', '']]);
+            ensureMinimumRows(DEFAULT_ROWS);
         }
     });
 
     // ===== Tombol Tambah Baris Kustom =====
     document.getElementById('btn-add-rows').addEventListener('click', function() {
-        var inputVal = document.getElementById('input-rows').value;
-        var count = parseInt(inputVal) || 500;
-        if (count <= 0 || count > 10000) {
-            Swal.fire({
-                title: 'Jumlah tidak valid',
-                text: 'Harap masukkan jumlah baris antara 1 sampai 10.000.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-        
-        try {
-            table.insertRow(count);
-            Swal.fire({
-                title: 'Berhasil',
-                text: count + ' baris baru telah ditambahkan ke tabel.',
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        } catch(e) {
-            // Fallback loop jika insertRow(count) tidak didukung
-            for (var i = 0; i < count; i++) {
-                table.insertRow();
-            }
-            Swal.fire({
-                title: 'Berhasil',
-                text: count + ' baris baru telah ditambahkan.',
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
+        var count = document.getElementById('input-rows').value;
+        addRows(count, true);
     });
 
     // ===== Tutorial & Penjelasan Tombol =====
     const showTutorial = function() {
-        Swal.fire({
-            title: 'Panduan CSV Converter E-Faktur',
-            html: `
-                <div style="text-align: left; font-size: 14px; line-height: 1.6; color: #4d4d4d; max-height: 400px; overflow-y: auto;">
-                    <p>Selamat datang di <strong>CSV Converter E-Faktur</strong>! Alat ini mempermudah rekonsiliasi dan konversi data bukti potong sebelum diunggah ke sistem e-Faktur.</p>
-                    
-                    <h3 style="font-size: 15px; font-weight: 600; color: #171717; margin-top: 16px; margin-bottom: 8px;">Cara Penggunaan:</h3>
-                    <ol style="padding-left: 20px; margin-bottom: 16px;">
-                        <li style="margin-bottom: 8px;">
-                            <strong>Copy & Paste:</strong> Copy dua kolom data dari Excel Anda (kolom <em>Nomor Faktur</em> dan <em>Bulan Faktur</em>), lalu klik sel pertama (<strong>A1</strong>) di tabel ini dan tekan <strong>Ctrl + V</strong> (atau Cmd + V di Mac).
-                        </li>
-                        <li style="margin-bottom: 8px;">
-                            <strong>Validasi Otomatis (Merah Muda):</strong> Jika ada data yang salah format, sel akan otomatis berwarna merah muda:
-                            <ul style="padding-left: 15px; margin-top: 4px; list-style-type: circle;">
-                                <li><strong>Nomor Faktur:</strong> Harus tepat 17 digit angka (contoh: <code>01000223000000123</code>).</li>
-                                <li><strong>Bulan Faktur:</strong> Harus ejaan bahasa Indonesia lengkap (contoh: <code>Januari</code>, <code>Februari</code>, dst. - case sensitive).</li>
-                            </ul>
-                        </li>
-                        <li style="margin-bottom: 8px;">
-                            <strong>Download CSV:</strong> Jika semua data sudah valid (tidak ada sel merah muda), klik tombol <strong>Download CSV</strong> untuk mengunduh file CSV siap upload.
-                        </li>
-                    </ol>
+        showModal('Panduan CSV Converter E-Faktur', `
+            <p>Selamat datang di <strong>CSV Converter E-Faktur</strong>! Alat ini membantu mengubah data dari Excel menjadi CSV dua kolom yang siap digunakan.</p>
+            
+            <h3>Cara Penggunaan:</h3>
+            <ol>
+                <li><strong>Copy & Paste:</strong> Copy dua kolom dari Excel: <em>Nomor Faktur Pajak</em> dan <em>Bulan Faktur Pajak</em>, lalu klik sel pertama (<strong>A1</strong>) dan tekan <strong>Ctrl + V</strong>.</li>
+                <li><strong>Validasi otomatis:</strong> Saat download, data dicek otomatis. Sel yang salah akan ditandai merah muda.</li>
+                <li><strong>Nomor Faktur Pajak:</strong> Harus tepat 17 digit angka, contoh: <code>01000223000000123</code>.</li>
+                <li><strong>Bulan Faktur Pajak:</strong> Harus nama bulan Indonesia lengkap, contoh: <code>Januari</code>, <code>Februari</code>, dst.</li>
+                <li><strong>Download CSV:</strong> Jika tidak ada error, klik <strong>Download CSV</strong> untuk menyimpan file.</li>
+            </ol>
 
-                    <h3 style="font-size: 15px; font-weight: 600; color: #171717; margin-top: 16px; margin-bottom: 8px;">Penjelasan Tombol & Fitur:</h3>
-                    <ul style="padding-left: 20px; margin-bottom: 16px; list-style-type: square;">
-                        <li style="margin-bottom: 6px;"><strong>📖 Cara Pakai:</strong> Membuka jendela panduan ini kembali.</li>
-                        <li style="margin-bottom: 6px;"><strong>➕ Tambah Baris:</strong> Memasukkan jumlah baris kosong baru di bagian bawah tabel. Ketik jumlahnya di input box sebelah tombol (default 500).</li>
-                        <li style="margin-bottom: 6px;"><strong>Bersihkan Tabel:</strong> Menghapus seluruh isi tabel untuk memulai konversi data yang baru.</li>
-                        <li style="margin-bottom: 6px;"><strong>Download CSV:</strong> Melakukan validasi total dan menyimpan data sebagai file <code>.csv</code> standar dua kolom.</li>
-                    </ul>
-                    
-                    <div style="background-color: #fafafa; border: 1px solid rgba(0,0,0,0.08); padding: 12px; border-radius: 6px; font-size: 13px; margin-top: 16px;">
-                        💡 <strong>Tips:</strong> Secara default, tabel ini dimuat dengan <strong>500 baris kosong</strong> untuk mempercepat pengerjaan data dalam jumlah banyak.
-                    </div>
-                </div>
-            `,
-            width: '600px',
-            confirmButtonText: 'Saya Mengerti, Mulai Kerja!',
-            confirmButtonColor: '#171717'
-        });
+            <h3>Penjelasan Tombol:</h3>
+            <ul>
+                <li><strong>📖 Cara Pakai:</strong> Membuka panduan ini lagi.</li>
+                <li><strong>➕ Tambah Baris:</strong> Menambah baris kosong sesuai angka di input <strong>Jml Baris</strong>.</li>
+                <li><strong>Bersihkan Tabel:</strong> Menghapus semua data dan mengembalikan tabel minimal 500 baris.</li>
+                <li><strong>Download CSV:</strong> Validasi data dan unduh file CSV.</li>
+            </ul>
+
+            <div class="modal-tip">💡 <strong>Tips:</strong> Tabel sekarang otomatis dimuat dengan <strong>500 baris kosong</strong>.</div>
+        `, { confirmText: 'Saya Mengerti, Mulai Kerja!' });
     };
 
-    // Tampilkan otomatis saat pertama kali dibuka
-    if (!localStorage.getItem('efaktur_converter_tutorial_shown')) {
+    // Tampilkan otomatis saat pertama kali dibuka untuk versi baru
+    if (!localStorage.getItem('efaktur_converter_tutorial_shown_v2')) {
         showTutorial();
-        localStorage.setItem('efaktur_converter_tutorial_shown', 'true');
+        localStorage.setItem('efaktur_converter_tutorial_shown_v2', 'true');
     }
 
     // Tombol cara pakai manual
@@ -173,8 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             alertBox.innerHTML = '<strong>\u26A0\uFE0F Ditemukan ' + errors.length + ' error. Perbaiki sel berwarna merah muda sebelum download:</strong><ul>' + errorList + '</ul>';
             alertBox.classList.remove('hidden');
-            
-            // Scroll ke alert box agar user tau ada error
             alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             return;
         }
@@ -193,8 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var csvData = [['Nomor Faktur Pajak', 'Bulan Faktur Pajak']].concat(validData);
         var csvString = Papa.unparse(csvData, { 
             quotes: false, 
-            delimiter: ',', 
-            newline: '\r\n' 
+            delimiter: ',',
+            newline: '\r\n'
         });
 
         // Trigger download
@@ -208,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.removeChild(link);
     });
 
-    // Simpan reference table ke window
+    // Simpan reference table ke window untuk debug/verifikasi
     window.efakturTable = table;
+    window.efakturAddRows = addRows;
+    window.efakturShowTutorial = showTutorial;
 });
