@@ -14,6 +14,9 @@
     
     <!-- Custom CSS (Vercel-style) -->
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
     <!-- Main Container -->
@@ -26,6 +29,11 @@
 
         <!-- Toolbar -->
         <div class="toolbar">
+            <button id="btn-tutorial" class="btn btn-ghost" style="margin-right: auto;">📖 Cara Pakai</button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="number" id="input-rows" class="input" placeholder="Jml Baris" value="500" min="1" max="10000" style="width: 100px;">
+                <button id="btn-add-rows" class="btn btn-ghost">➕ Tambah Baris</button>
+            </div>
             <button id="btn-clear" class="btn btn-ghost">Bersihkan Tabel</button>
             <button id="btn-export" class="btn btn-primary">⬇️ Download CSV</button>
         </div>
@@ -51,6 +59,7 @@
     <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
     <script src="https://jsuites.net/v4/jsuites.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
