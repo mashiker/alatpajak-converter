@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <li><strong>Copy & Paste:</strong> Copy dua kolom dari Excel: <em>Nomor Faktur Pajak</em> dan <em>Bulan Faktur Pajak</em>, lalu klik sel pertama (<strong>A1</strong>) dan tekan <strong>Ctrl + V</strong>.</li>
                 <li><strong>Validasi otomatis:</strong> Saat download, data dicek otomatis. Sel yang salah akan ditandai merah muda.</li>
                 <li><strong>Nomor Faktur Pajak:</strong> Harus tepat 17 digit angka, contoh: <code>01000223000000123</code>.</li>
-                <li><strong>Bulan Faktur Pajak:</strong> Harus nama bulan Indonesia lengkap, contoh: <code>Januari</code>, <code>Februari</code>, dst.</li>
+                <li><strong>Bulan Faktur Pajak:</strong> Harus salah satu dari nama bulan Indonesia lengkap dengan huruf awal kapital: <code>Januari</code>, <code>Februari</code>, <code>Maret</code>, <code>April</code>, <code>Mei</code>, <code>Juni</code>, <code>Juli</code>, <code>Agustus</code>, <code>September</code>, <code>Oktober</code>, <code>November</code>, atau <code>Desember</code>.</li>
                 <li><strong>Download CSV:</strong> Jika tidak ada error, klik <strong>Download CSV</strong> untuk menyimpan file.</li>
             </ol>
 
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validasi Bulan: harus nama bulan Indonesia lengkap
             if (!INDONESIAN_MONTHS.has(bulan)) {
-                errors.push('Baris ' + rowNum + ': Bulan Faktur Pajak tidak valid (Harus ejaan lengkap, misal: Januari, Februari, dst.).');
+                errors.push('Baris ' + rowNum + ': Bulan Faktur Pajak tidak valid. Isi harus salah satu dari: Januari, Februari, Maret, April, Mei, Juni, Juli, Agustus, September, Oktober, November, atau Desember. Gunakan huruf awal kapital.');
                 table.setStyle('B' + rowNum, 'background-color', '#fef2f2');
                 rowHasError = true;
             }
