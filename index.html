@@ -3,36 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Converter | E-Faktur Automation</title>
+    <title>CSV Converter E-Faktur — AlatPajak.id</title>
+    <meta name="description" content="Konverter CSV untuk E-Faktur dengan validasi otomatis. Paste data Excel, validasi Nomor Faktur Pajak (17 digit) & Bulan Faktur Pajak, lalu download CSV siap upload.">
     
-    <!-- Geist Font (Vercel) -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="CSV Converter E-Faktur — AlatPajak.id">
+    <meta property="og:description" content="Konverter CSV dengan validasi otomatis untuk E-Faktur. Gratis, cepat, dan tanpa instalasi.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://converter.alatpajak.id/">
+    
+    <!-- Favicon (SVG inline) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230a0a0a'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='700' text-anchor='middle' fill='%235e6ad2' font-family='sans-serif'%3E%E2%89%A1%3C/text%3E%3C/svg%3E">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Jspreadsheet CE CSS -->
     <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v4/jexcel.css" type="text/css" />
     <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
     
-    <!-- Custom CSS (Vercel-style) -->
-    <link rel="stylesheet" href="css/style.css?v=20260716-2">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css?v=premium-v1">
 </head>
 <body>
     <!-- Main Container -->
     <main class="container">
-        <!-- Header Section -->
+        <!-- Header -->
         <header class="header">
-            <h1 class="heading">CSV Converter E-Faktur</h1>
-            <p class="subtext">Paste data Excel ke tabel. Validasi otomatis Nomor Faktur Pajak (17 digit) & Bulan Faktur Pajak (ejaan lengkap). Download CSV siap upload.</p>
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                E-Faktur Automation Tools
+            </div>
+            <h1 class="heading">CSV Converter <span class="heading-gradient">E-Faktur</span></h1>
+            <p class="subtext">Paste data Excel ke tabel. Validasi otomatis Nomor Faktur Pajak (17 digit) &amp; Bulan Faktur Pajak (ejaan lengkap). Download CSV siap upload.</p>
         </header>
 
-        <!-- Toolbar -->
+        <!-- Sticky Glass Toolbar -->
         <div class="toolbar">
-            <button id="btn-tutorial" class="btn btn-ghost" style="margin-right: auto;">📖 Cara Pakai</button>
+            <button id="btn-tutorial" class="btn btn-tutorial">📖 Cara Pakai</button>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <input type="number" id="input-rows" class="input" placeholder="Jml Baris" value="500" min="1" max="10000" style="width: 100px;">
-                <button id="btn-add-rows" class="btn btn-ghost">➕ Tambah Baris</button>
+                <input type="number" id="input-rows" class="input" placeholder="Jml Baris" value="500" min="1" max="10000">
+                <button id="btn-add-rows" class="btn btn-ghost">Tambah Baris</button>
             </div>
-            <button id="btn-clear" class="btn btn-ghost">Bersihkan Tabel</button>
-            <button id="btn-export" class="btn btn-primary">⬇️ Download CSV</button>
+            <button id="btn-clear" class="btn btn-ghost">Bersihkan</button>
+            <button id="btn-export" class="btn btn-primary">Download CSV</button>
         </div>
 
         <!-- Validation Alert -->
@@ -43,12 +59,15 @@
             <div id="spreadsheet-container">
                 <div id="spreadsheet"></div>
             </div>
-            <p class="hint">💡 Copy dari Excel → Paste di sini (Ctrl+V). Baris error akan berwarna merah muda.</p>
+            <p class="hint">Copy dari Excel → Paste di sini (Ctrl+V). Baris error akan berwarna merah muda.</p>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>Dibuat untuk <a href="https://alatpajak.id" target="_blank" rel="noopener">AlatPajak.id</a> · E-Faktur Automation</p>
+            <p class="footer-brand">
+                Dibuat untuk <a href="https://alatpajak.id" target="_blank" rel="noopener">AlatPajak.id</a>
+            </p>
+            <p class="footer-meta">E-Faktur Automation · Gratis tanpa instalasi</p>
         </footer>
     </main>
 
@@ -56,6 +75,6 @@
     <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
     <script src="https://jsuites.net/v4/jsuites.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="js/app.js?v=20260716-3"></script>
+    <script src="js/app.js?v=premium-v1"></script>
 </body>
 </html>
