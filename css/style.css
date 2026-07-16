@@ -371,6 +371,17 @@ body::before {
     font-family: var(--font-sans) !important;
     font-size: 13.5px !important;
     border: none !important;
+    width: 100% !important;
+}
+
+/* Force last column to stretch */
+#spreadsheet-container .jexcel colgroup col:last-child {
+    width: auto !important;
+}
+
+/* Ensure content area fills container */
+#spreadsheet-container .jexcel_content {
+    width: 100% !important;
 }
 
 #spreadsheet-container .jexcel thead th {
