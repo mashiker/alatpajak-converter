@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // ===== Kolom Spreadsheet =====
     const columns = [
-        { type: 'text', title: 'Nomor Faktur Pajak', width: 280 },
-        { type: 'text', title: 'Bulan Faktur Pajak', width: 220 }
+        { type: 'text', title: 'Nomor Faktur Pajak', width: 340 },
+        { type: 'text', title: 'Bulan Faktur Pajak', width: 240 }
     ];
 
     const DEFAULT_ROWS = 500;
@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         data: [['', '']],
         columns: columns,
         minDimensions: [2, DEFAULT_ROWS],
+        tableOverflow: true,
+        tableWidth: '100%',
         allowInsertRow: true,
         allowManualInsertRow: true,
         allowInsertColumn: false,
